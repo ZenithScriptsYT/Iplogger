@@ -1,0 +1,164 @@
+
+-- Define the GUI elements
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TitleLabel = Instance.new("TextLabel")
+local SecretLabel = Instance.new("TextLabel")
+local TextBox = Instance.new("TextBox")
+local TextButton = Instance.new("TextButton")
+local CloseButton = Instance.new("TextButton")
+
+-- Define the sounds
+local StartupSound = Instance.new("Sound")
+StartupSound.SoundId = "rbxassetid://2865227271" -- Replace with your startup sound asset ID
+StartupSound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local ButtonClickSound = Instance.new("Sound")
+ButtonClickSound.SoundId = "rbxassetid://2865227039" -- Replace with your button click sound asset ID
+ButtonClickSound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local ErrorSound = Instance.new("Sound")
+ErrorSound.SoundId = "rbxassetid://2865228021" -- Replace with your error sound asset ID
+ErrorSound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Parent the GUI to the player's PlayerGui
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Customize the Frame
+Frame.Size = UDim2.new(0, 300, 0, 200)
+Frame.Position = UDim2.new(0, 10, 0.5, -100) -- Positioned on the left side and centered vertically
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 30) -- White background 
+Frame.BorderColor3 = Color3.fromRGB(75, 0, 130) -- Light blue border
+Frame.BorderSizePixel = 2
+Frame.Parent = ScreenGui
+Frame.ClipsDescendants = true -- Ensure content is clipped within rounded corners
+
+-- Add and customize the TitleLabel
+TitleLabel.Size = UDim2.new(1, 0, 0, 30)
+TitleLabel.Position = UDim2.new(0, 0, 0, 0)
+TitleLabel.Text = " FE IP LOGGER"
+TitleLabel.BackgroundColor3 = Color3.fromRGB(30, 0, 50) -- Dark purple background
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+TitleLabel.TextScaled = true
+TitleLabel.Parent = Frame
+
+-- Add and customize the SecretLabel
+SecretLabel.Size = UDim2.new(1, 0, 0, 30)
+SecretLabel.Position = UDim2.new(0, 0, 1, -30) -- Positioned at the bottom
+SecretLabel.Text = "Subscribe To ZenithScripts"
+SecretLabel.BackgroundColor3 = Color3.fromRGB(30, 0, 50) -- Dark purple background
+SecretLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+SecretLabel.TextScaled = true
+SecretLabel.TextXAlignment = Enum.TextXAlignment.Center
+SecretLabel.Parent = Frame
+
+-- Customize the TextBox
+TextBox.Size = UDim2.new(0, 280, 0, 30)
+TextBox.Position = UDim2.new(0, 10, 0, 50)
+TextBox.PlaceholderText = "Enter Username"
+TextBox.Text = ""
+TextBox.BackgroundColor3 = Color3.fromRGB(45, 45, 60) -- Dark gray background
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+TextBox.BorderColor3 = Color3.fromRGB(75, 0, 130) -- Purple border
+TextBox.BorderSizePixel = 2
+TextBox.Parent = Frame
+
+-- Customize the TextButton
+TextButton.Size = UDim2.new(0, 280, 0, 30)
+TextButton.Position = UDim2.new(0, 10, 0, 90)
+TextButton.Text = "Start"
+TextButton.BackgroundColor3 = Color3.fromRGB(75, 0, 130) -- Purple background
+TextButton.TextColor3 = Color3.new(1, 1, 1) -- White text
+TextButton.Parent = Frame
+
+-- Add and customize the CloseButton
+CloseButton.Size = UDim2.new(0, 20, 0, 20) -- Smaller size
+CloseButton.Position = UDim2.new(1, -30, 0, 10) -- Top right corner
+CloseButton.Text = "X"
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red background
+CloseButton.TextColor3 = Color3.new(1, 1, 1) -- White text
+CloseButton.Parent = Frame
+
+-- Apply rounded corners to all elements
+local function applyRoundedCorners(element, radius)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, radius)
+    corner.Parent = element
+end
+
+applyRoundedCorners(Frame, 10)
+applyRoundedCorners(TextBox, 5)
+applyRoundedCorners(TextButton, 5)
+applyRoundedCorners(CloseButton, 5)
+applyRoundedCorners(TitleLabel, 10)
+applyRoundedCorners(SecretLabel, 10)
+
+-- Function to generate a fake IP address with format XX.###.###.##
+local function generateFakeIP()
+    local part1 = math.random(10, 99) -- 2-digit number
+    local part2 = "###" -- Literal hashtags
+    local part3 = "###" -- Literal hashtags
+    local part4 = "##" -- Literal hashtags
+    return tostring(part1) .. "." .. part2 .. "." .. part3 .. "." .. part4
+end
+
+-- Function to start the fake IP logging process
+TextButton.MouseButton1Click:Connect(function()
+    ButtonClickSound:Play() -- Play sound when Start button is clicked
+    local username = TextBox.Text
+    if username ~= "" then
+        local ip = generateFakeIP()
+        -- Sending fake chat messages
+        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(username .. " - Receiving IP Address...", "All")
+        wait(1)
+        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(username .. " is from nil OS: IP: " .. ip .. " (IP: Successfully Logged)", "All")
+        wait(1)
+        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(username .. "'s Data has been successfully stolen", "All")
+    else
+        ErrorSound:Play() -- Play error sound when no username is entered
+        -- If no username is entered
+        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Please enter a valid username.", "All")
+    end
+end)
+
+-- Play startup sound and animate the GUI appearance
+StartupSound:Play()
+Frame.Size = UDim2.new(0, 0, 0, 0) -- Start with zero size
+
+-- Animate expansion of the Frame
+Frame:TweenSize(UDim2.new(0, 300, 0, 200), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.5, true)
+
+-- Function to close the GUI
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- Make the Frame draggable
+local dragging = false
+local dragInput, mousePos, framePos
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        mousePos = input.Position
+        framePos = Frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - mousePos
+        Frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+    end
+end)
